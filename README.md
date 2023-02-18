@@ -7,6 +7,7 @@ Updated __2023__ for [Cordova](https://cordova.apache.org/) with tracking consen
 <p align="center">
 <img src="docs/trackingConsent.png" alt="iOS request tracking consent" width="300" align="center" />
 </p>
+
 To include ads without any tracking, see: [cordova-plugin-ads-donottrack](https://github.com/cozycodegh/cordova-plugin-ads-donottrack)
 
 ***Cordova*** plugin to add ***ads*** (by Google AdMob) into an app. <br>
@@ -18,17 +19,21 @@ Have a good one!
 
 # PLUGIN USAGE<a id="plugin-usage"></a><br>
 
-Add these calls inside of your cordova JavaScript to show ads:
-banner ads
+Add these calls inside of your cordova JavaScript to show ads: <br>
+
+<ins>banner ads</ins> <br>
 [`adMob.banner(bannerId)`](docs/banner.md) <br>
 [`adMob.removeBanner()`](docs/banner.md#remove-banner) <br>
-full screen ads
+
+<ins>full screen ads </ins><br>
 [`adMob.interstitial(interstitialId)`](docs/interstitial.md)  <br>
 [`adMob.showInterstitial()`](docs/interstitial.md#show-interstitial)  <br>
-rewarded video ads
+
+<ins>rewarded video ads </ins><br>
 [`adMob.rewarded(rewardedId)`](docs/rewarded.md)  <br>
 [`adMob.showRewarded()`](docs/rewarded.md#show-rewarded)  <br>
-rewarded full screen video ads (new, and better supported than rewarded ads)
+
+<ins>rewarded full screen video ads</ins> (new, and better supported than rewarded ads) <br>
 [`adMob.rewardedInterstitial(rewardedInterstitialId)`](docs/rewarded-interstitial.md)  <br>
 [`adMob.showRewardedInterstitial()`](docs/rewarded-interstitial.md#show-rewarded-interstitial)  <br>
 
@@ -152,7 +157,7 @@ adMob.rewardedInterstitial(admob_ids).then(function(){
 });
 ```
 
-##More on the plugin: <a id="more-plugin"></a><br>
+## More on the plugin: <a id="more-plugin"></a><br>
 - wait for `deviceready` to fire before calling any functions <br>
 - errors can be automatically retried after a timeout or ignored <br>
 - `adMob` uses a promise-based API to load ads <br>
