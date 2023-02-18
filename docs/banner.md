@@ -51,8 +51,8 @@ var admob_ids = {
 - error["responseCode"]     //ad error response code from Google (if there is one)
 - error["responseMessage"]  //ad error response message from Google (if there is one)
 ```
-common error names:
-LOAD_AD_ERROR may occur when an ad id is not reconized or not ready to show ads yet
+common error names: <br>
+- `LOAD_AD_ERROR` may occur when an ad id is not reconized or not ready to show ads yet
 
 ## Tips:
 
