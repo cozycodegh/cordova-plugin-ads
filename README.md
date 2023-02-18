@@ -61,7 +61,7 @@ cordova plugin add cordova-plugin-ads
 ```
     
 2. Test that ads are working using test ads. Use the id `"test"` to load test ads from the plugin.
-```
+```js
 var test_ad_id = "test";
 
 async function runAllOfTheAds(){
@@ -106,7 +106,7 @@ function onDeviceReady() {
 ```
 
 3. In your Google AdMob account, create ad units for your apps - note that the ads may return LOAD_AD_ERRORS errors (especially iOS) until the app has been approved, or while during testing
-```
+```js
 var admob_ids = {
     'android' : {
         'banner': "ca-app-pub-4029587076166791/6431168058",
