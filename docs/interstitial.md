@@ -26,7 +26,7 @@ adMob.interstitial(interstitial_id).then(function () {
  - use at break-points in the app to show full screen ads which the user can dismiss
 
 ## Parameters:
-` - Google AdMob id for a interstitial ad `
+` - Google AdMob id for a interstitial ad ` <br>
 can be `"test"` for test ads, and ad string (`"ca-app-pub-4029587076166791/6431168058"`), or an ad_id object:
 ```
 var admob_ids = {
