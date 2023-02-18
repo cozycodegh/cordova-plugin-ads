@@ -21,7 +21,8 @@ adMob.rewarded(rewarded_id).then(function () {
 }).then(function(reward){
     // finished showing rewarded ad
     if (reward.rewarded){
-        alert("gained "+reward.amount+" "+reward.type);
+        // give user the reward they earned
+        // can view reward.amount and reward.type
     }
 }).catch (function(err){
     // view or handle error messages
@@ -62,6 +63,7 @@ adMob.showRewarded().then(function (reward) {
     // eg. unpause a game that was paused to show the full screen ad
     if (reward.rewarded){
         alert("gained "+reward.amount+" "+reward.type);
+        // give reward
     }
 }).catch (function(err){
     // view or handle error messages
