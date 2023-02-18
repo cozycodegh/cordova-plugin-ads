@@ -71,9 +71,9 @@ adMob.showInterstitial().then(function () {
 - error["responseCode"]     //ad error response code from Google (if there is one)
 - error["responseMessage"]  //ad error response message from Google (if there is one)
 ```
-common error names:
-LOAD_AD_ERROR may occur when an ad id is not reconized or not ready to show ads yet
-SHOW_AD_ERROR will occur when an ad is called to show before it is ready
+common error names: <BR>
+- `LOAD_AD_ERROR` may occur when an ad id is not reconized or not ready to show ads yet <BR>
+- `SHOW_AD_ERROR` will occur when an ad is called to show before it is ready <BR>
 
 # Example <a id="example"></a><br>
 ```js
