@@ -60,7 +60,7 @@ Cordova is an open source project maintained by Apache that lets you make apps w
 cordova plugin add cordova-plugin-ads
 ```
     
-2. Test that ads are working using test banners, use the id "test" to load test banners from the plugin
+2. Test that ads are working using test ads. Use the id `"test"` to load test ads from the plugin.
 ```
 var test_ad_id = "test";
 
