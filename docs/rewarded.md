@@ -19,7 +19,7 @@ adMob.rewarded(rewarded_id).then(function () {
     // reward video ad is ready to be shown
     return adMob.showRewarded();
 }).then(function(reward){
-    alert("showed rewarded ads"+JSON.stringify(reward));
+    // finished showing rewarded ad
     if (reward.rewarded){
         alert("gained "+reward.amount+" "+reward.type);
     }
