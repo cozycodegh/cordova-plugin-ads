@@ -38,7 +38,7 @@ Add these calls inside of your cordova JavaScript to show ads: <br>
 [`adMob.showRewardedInterstitial()`](docs/rewardedInterstitial.md#show-rewarded-interstitial)  <br>
 
 The plugin creates an `adMob` object that can request to load new ads. <br>
-Note: to fund the development of the plugin, the plugin requests 2% of ads for the plugin developer. <br>
+Note: to fund the development of the plugin, the plugin requests 2% of ads for the plugin developer. It seems there are a lot of Cordova ad plugins that request this lol, I think it is a long story… <br>
 
 # CREATE AN APP WITH CORDOVA<a id="create-app"></a><br>
 
