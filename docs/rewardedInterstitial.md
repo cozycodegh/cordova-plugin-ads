@@ -18,7 +18,10 @@ adMob.rewardedInterstitial(rewarded_interstitial_id).then(function () {
     // reward video ad is ready to be shown
     return adMob.showRewardedInterstitial();
 }).then(function(reward){
-    alert("showed rewarded ads"+JSON.stringify(reward));
+    // finished showing rewarded ads
+    if (reward.rewarded){
+        // user earned reward for watching the ad
+    }
 }).catch (function(err){
     // view or handle error messages
 });
@@ -57,7 +60,8 @@ adMob.showRewarded().then(function (reward) {
     // do anything after rewarded ad was dismissed
     // eg. unpause a game that was paused to show the full screen ad
     if (reward.rewarded){
-        alert("gained "+reward.amount+" "+reward.type);
+        // give user the reward they earned
+        // can view reward.amount and reward.type
     }
 }).catch (function(err){
     // view or handle error messages
