@@ -44,7 +44,7 @@ var ad_errors = {
     'plugin error' : { 1001: 'cordova ads plugin error (please contact plugin github for issues '+plugin_issues+')' },
     'plugin input error'  : { 1002: 'cordova ads plugin invalid input error (see the documentation for correct arguments to send to the plugin '+plugin_documentation+')'},
     'ads error'     : {1003: 'cordova ads plugin encountered an error, see name and message for more information' },
-    'not implemented' : { 1004: 'cordova ads plugin - not implemented for this platform, see '+plugin_documentation+'for more information'}
+    'not implemented' : { 1004: 'cordova ads plugin - not implemented for this platform (ios and android only), see '+plugin_documentation+' for more information'}
 };
 var cordova_unimplemented_error = "Missing Command Error";
 var getError = function (err_name){
@@ -75,6 +75,7 @@ var makeAdsErrorReject = function (reject){
         var err = (adserr == cordova_unimplemented_error) ? getError('not implemented') : getError('ads error');
         if (adserr.message) err.message = adserr.message;
         else if (typeof adserr == "string") err.message = adserr;
+        if (adserr == cordova_unimplemented_error) delete err.message;
         if (adserr.name) err.name = adserr.name;
         if (adserr.responseCode) err.responseCode = adserr.responseCode;
         if (adserr.responseMessage) err.responseMessage = adserr.responseMessage;
