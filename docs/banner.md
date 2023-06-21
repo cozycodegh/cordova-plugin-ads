@@ -9,11 +9,11 @@ jump to: [banner](#banner) | [removeBanner](#remove-banner) | [Example](#example
 <img src="banner.png" alt="banner ad" width="300" align="center" />
 </p>
 
-# adMob.banner(banner_id) <a id="banner"></a><br>
+# adMob.banner(banner_id, ad_size, ad_position) <a id="banner"></a><br>
 
 ## Usage:
 ```js
-adMob.banner(banner_id).then(function () {
+adMob.banner(banner_id,adMob.ad_sizes.RESIZE,adMob.ad_positions.BOTTOM).then(function () {
     // do anything after banner has loaded successfully
 }).catch (function(err){
     // view or handle error messages
@@ -21,12 +21,13 @@ adMob.banner(banner_id).then(function () {
 ```
 
 ## Description:
- - show a banner ad at the bottom of the app screen
+ - show a banner ad at the top or bottom of the app screen
+ - by default the ad size is "banner", 320x50, and the ad position is at the bottom of the screen
  - use after the start up of the device (`onDeviceReady`)
 
 ## Parameters:
-` - Google AdMob id for a banner ad ` <br>
-can be `"test"` for test ads, and ad string (`"ca-app-pub-4029587076166791/6431168058"`), or an ad_id object:
+- `Google AdMob id` - for a banner ad <br>
+can be `"test"` for test ads, or normally an ad string (`"ca-app-pub-4029587076166791/6431168058"`), or an ad_id object:
 ```
 var admob_ids = {
     'android' : {
@@ -42,6 +43,16 @@ var admob_ids = {
     }
 };
 ```
+- `ad_size` (optional - select a banner size, default is BANNER)` <br>
+    - `adMob.ad_sizes.RESIZE` resizes to the get the largest fitting avialable banner
+    - `adMob.ad_sizes.BANNER` default 320x50 ad banner
+    - `adMob.ad_sizes.LARGE_BANNER` 300x100
+    - `adMob.ad_sizes.MEDIUM_RECTANGLE` 300x250
+    - `adMob.ad_sizes.FULL_BANNER` 468x60
+    - `adMob.ad_sizes.LEADERBOARD` 728x90
+- `ad_position` (optional - select a banner position, default is BOTTOM)` <br>
+    - `adMob.ad_positions.BOTTOM` default
+    - `adMob.ad_positions.TOP` 
 
 ## Errors:
 ```
@@ -80,7 +91,7 @@ adMob.removeBanner().then(function () {
 # Example <a id="example"></a><br>
 ```js
 function onDeviceReady() {
-    adMob.banner(banner_id).catch(function(err){});
+    adMob.banner(banner_id,adMob.ad_sizes.RESIZE).catch(function(err){});
 }
 ```
 
