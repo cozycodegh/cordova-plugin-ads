@@ -3,7 +3,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
   xmlns:android="http://schemas.android.com/apk/res/android"
   id="cordova-plugin-ads"
-  version="1.0.0">
+  version="2.0.0">
 
   <name>Ads with Admob</name>
   <description>Cordova plugin to add advertisements (via Google AdMob).</description>

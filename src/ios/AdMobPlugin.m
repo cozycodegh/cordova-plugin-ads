@@ -22,7 +22,7 @@
 @implementation AdMobPlugin
 
 //initialize
-- (void)pluginInitialize{
+- (void) pluginInitialize{
     [super pluginInitialize];
 }
 - (void) requestAdsTrackingPermission {
@@ -67,11 +67,56 @@
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         return;
     }
+    id adSize = [command.arguments objectAtIndex:1];
+    if (![adSize isKindOfClass:[NSString class]]) {
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:@{
+            @"name": @"INVALID_ARGUMENTS",
+            @"message": @"ad size must be a string"
+        }];
+        [pluginResult setKeepCallbackAsBool:NO];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        return;
+    }
+    id adPosition = [command.arguments objectAtIndex:2];
+    if (![adMobId isKindOfClass:[NSString class]]) {
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:@{
+            @"name": @"INVALID_ARGUMENTS",
+            @"message": @"ad position must be a string"
+        }];
+        [pluginResult setKeepCallbackAsBool:NO];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        return;
+    }
     
     [self initializeAds];
     
     if (!self.bannerView){
-        self.bannerView = [[GADBannerView alloc] initWithAdSize:GADAdSizeBanner];
+        if ([adSize isEqualToString:@"320x50"])  self.bannerView = [[GADBannerView alloc] initWithAdSize:GADAdSizeBanner];
+        else if ([adSize isEqualToString:@"300x100"]) self.bannerView = [[GADBannerView alloc] initWithAdSize:GADAdSizeLargeBanner];
+        else if ([adSize isEqualToString:@"300x250"]) self.bannerView = [[GADBannerView alloc] initWithAdSize:GADAdSizeMediumRectangle];
+        else if ([adSize isEqualToString:@"468x60"]) self.bannerView = [[GADBannerView alloc] initWithAdSize:GADAdSizeFullBanner];
+        else if ([adSize isEqualToString:@"728x90"]) self.bannerView = [[GADBannerView alloc] initWithAdSize:GADAdSizeLeaderboard];
+        else {
+            NSArray *sizes = [adSize componentsSeparatedByString:@"x"];
+            if ([sizes count] != 2) {
+                CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:@{
+                    @"name": @"INVALID_ARGUMENTS",
+                    @"message": @"ad position be in the format ###x###, for example 320x50"
+                }];
+                [pluginResult setKeepCallbackAsBool:NO];
+                [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+                return;
+            }
+            /*
+            float size1 = [NSNumber numberWithDouble:<#(double)#>:sizes[0]];
+            float size2 = [NSNumber numberWithDouble:<#(double)#>:sizes[1]];*/
+            float size1 = 300;
+            float size2 = 50;
+            NSLog(@"ADMOBPLUGIN: custom ad size: %fx%f",size1,size2);
+            self.bannerView = [[GADBannerView alloc] initWithAdSize:GADAdSizeFromCGSize(CGSizeMake(size1, size2))];
+        }
+        if ([adPosition isEqualToString:@"TOP"]) self.requestingBannerAdPositionTop = true;
+        else self.requestingBannerAdPositionTop = false;
         [self addBannerViewToView:self.bannerView];
         self.bannerView.adUnitID = adMobId;
         self.bannerView.rootViewController = self.viewController; //self;
@@ -83,7 +128,7 @@
         self.cdvBannerCallbackId = [NSString stringWithFormat: @"%@", command.callbackId];
     }
 
-    NSLog(@"ADMOBPLUGIN: requesting banner ad %@",adMobId);
+    NSLog(@"ADMOBPLUGIN: requesting banner ad %@, size: %@, position: %@",adMobId,adSize,adPosition);
     GADRequest *request = [GADRequest request];
     [self.bannerView loadRequest:request];
     
@@ -384,22 +429,41 @@
 - (void)addBannerViewToView:(UIView *)bannerView {
     bannerView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.viewController.view addSubview:bannerView];
-    [self.viewController.view addConstraints:@[
-        [NSLayoutConstraint constraintWithItem:bannerView
-                                     attribute:NSLayoutAttributeBottom
-                                     relatedBy:NSLayoutRelationEqual
-                                        toItem:self.viewController.bottomLayoutGuide //errors: view.safeAreaLayoutGuide.bottomAnchor // bottomLayoutGuide
-                                     attribute:NSLayoutAttributeTop
-                                    multiplier:1
-                                      constant:0],
-        [NSLayoutConstraint constraintWithItem:bannerView
-                                     attribute:NSLayoutAttributeCenterX
-                                     relatedBy:NSLayoutRelationEqual
-                                        toItem:self.viewController.view
-                                     attribute:NSLayoutAttributeCenterX
-                                    multiplier:1
-                                      constant:0]
-    ]];
+    if (self.requestingBannerAdPositionTop){
+        [self.viewController.view addConstraints:@[
+            [NSLayoutConstraint constraintWithItem:bannerView
+                                         attribute:NSLayoutAttributeTop
+                                         relatedBy:NSLayoutRelationEqual
+                                            toItem:self.viewController.topLayoutGuide //errors: view.safeAreaLayoutGuide.bottomAnchor // bottomLayoutGuide
+                                         attribute:NSLayoutAttributeTop
+                                        multiplier:1
+                                          constant:0],
+            [NSLayoutConstraint constraintWithItem:bannerView
+                                         attribute:NSLayoutAttributeCenterX
+                                         relatedBy:NSLayoutRelationEqual
+                                            toItem:self.viewController.view
+                                         attribute:NSLayoutAttributeCenterX
+                                        multiplier:1
+                                          constant:0]
+        ]];
+    } else {
+        [self.viewController.view addConstraints:@[
+            [NSLayoutConstraint constraintWithItem:bannerView
+                                         attribute:NSLayoutAttributeBottom
+                                         relatedBy:NSLayoutRelationEqual
+                                            toItem:self.viewController.bottomLayoutGuide //errors: view.safeAreaLayoutGuide.bottomAnchor // bottomLayoutGuide
+                                         attribute:NSLayoutAttributeTop
+                                        multiplier:1
+                                          constant:0],
+            [NSLayoutConstraint constraintWithItem:bannerView
+                                         attribute:NSLayoutAttributeCenterX
+                                         relatedBy:NSLayoutRelationEqual
+                                            toItem:self.viewController.view
+                                         attribute:NSLayoutAttributeCenterX
+                                        multiplier:1
+                                          constant:0]
+        ]];
+    }
 }
 - (void)bannerViewDidReceiveAd:(GADBannerView *)bannerView {
     NSLog(@"ADMOBPLUGIN: received banner ad");

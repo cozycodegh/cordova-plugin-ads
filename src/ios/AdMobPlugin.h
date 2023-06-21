@@ -9,6 +9,7 @@
 
 @property (assign) BOOL adsInitialized;
 @property (assign) BOOL requestingBannerAd;
+@property (assign) BOOL requestingBannerAdPositionTop;
 @property (assign) BOOL requestingInterstitialAd;
 @property (assign) BOOL requestingShowInterstitialAd;
 @property (assign) BOOL requestingRewardedAd;

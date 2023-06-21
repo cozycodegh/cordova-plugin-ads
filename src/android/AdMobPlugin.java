@@ -115,6 +115,7 @@ public class AdMobPlugin extends CordovaPlugin {
     NextAsync mRewardedInterstitialNext;
     
     Boolean mRewardedAdRewarded = false;
+    boolean mBannerTopActive = false;
     int mRewardedAdRewardedAmount = 0;
     String mRewardedAdRewardedType = "";
     Boolean mRewardedInterstitialAdRewarded = false;
@@ -219,38 +220,56 @@ public class AdMobPlugin extends CordovaPlugin {
         cordova.getActivity().runOnUiThread(new Runnable() {
             public void run() {
                 try {
-                    if (mBannerAdView == null){
-                        //mBannerAdView = findViewById(R.id.adView);
-                        mBannerAdView = new AdView(mActivity);
-                        mBannerAdView.setAdListener(new BannerListener());
-                        mBannerAdView.setAdSize(AdSize.BANNER);
-                        mBannerAdView.setAdUnitId(next.getArgsAdMobId(true)); //banner id
-                    }
-                    //settings
-                    //mBannerAdView.setAdSize(getAdSize());
                     //get ad
                     AdRequest adRequest = new AdRequest.Builder().build();
                     mBannerNext = next;
-                    logInfo("requested banner ad");
-                    mBannerAdView.loadAd(adRequest);
+                    String admob_id = next.getArgsAdMobId(true);
+                    String ad_size = next.getArgsAdSize();
+                    logInfo("requested banner ad: "+next.getArgsAdPositionText()+" "+ad_size+" from "+admob_id);
                     
-                    if (mBannerLayout == null){
+                    String[] ad_sizes = ad_size.split("x");
+                    if (ad_sizes.length < 1){
+                        next.callbackContext.error(makeError(PLUGIN_ERROR_CODES_INVALID_ARGUMENTS,"Invalid AdMob ad_size argument "+ad_size+", must be format ###x### eg. 320x50"));
+                        return;
+                    }
+                    
+                    boolean newBanner = false;
+                    if (mBannerAdView == null){
+                        newBanner = true;
+                        //mBannerAdView = findViewById(R.id.adView);
+                        mBannerAdView = new AdView(mActivity);
+                        mBannerAdView.setAdListener(new BannerListener());
+                        //settings
+                        mBannerAdView.setAdUnitId(admob_id);
+                        //mBannerAdView.setAdSize(AdSize.BANNER);
+                        mBannerAdView.setAdSize(new AdSize(Integer.parseInt(ad_sizes[0]),Integer.parseInt(ad_sizes[1])));
+                        //mBannerAdView.setAdSize(getAdSize());
+                    }
+                    
+                    mBannerAdView.loadAd(adRequest);
+                    if (newBanner){ //errors: mBannerLayout == null && !mBannerTopActive){
                         //show banner
                         View mainView = getView();
                         ViewGroup parentView = (ViewGroup) mainView.getParent();
-                        //parentView.addView(mBannerAdView, 0); //top
-                        ViewGroup rootView = (ViewGroup) mainView.getRootView();
-                        RelativeLayout mBannerLayout = new RelativeLayout(mActivity);
-                        rootView.addView(mBannerLayout, new LayoutParams(-1, -1));
-                        mBannerLayout.bringToFront();
-                        //bottom center
-                        FrameLayout frameLayoutOuter = new FrameLayout(mActivity);
-                        mBannerLayout.addView(frameLayoutOuter,new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT, Gravity.BOTTOM));
-                        mBannerContainerLayout = new FrameLayout(mActivity);
-                        frameLayoutOuter.addView(mBannerContainerLayout,new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM));
-                        mBannerContainerLayout.addView(mBannerAdView, 0);
-                        mBannerLayout.setBackgroundColor(android.R.color.black);
+                        if (next.getArgsAdPositionIsTop()){
+                            mBannerTopActive = true;
+                            parentView.addView(mBannerAdView, 0); //top
+                        } else {
+                            ViewGroup rootView = (ViewGroup) mainView.getRootView();
+                            RelativeLayout mBannerLayout = new RelativeLayout(mActivity);
+                            rootView.addView(mBannerLayout, new LayoutParams(-1, -1));
+                            mBannerLayout.bringToFront();
+                            //bottom center
+                            FrameLayout frameLayoutOuter = new FrameLayout(mActivity);
+                            mBannerLayout.addView(frameLayoutOuter,new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT, Gravity.BOTTOM));
+                            mBannerContainerLayout = new FrameLayout(mActivity);
+                            frameLayoutOuter.addView(mBannerContainerLayout,new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM));
+                            mBannerContainerLayout.addView(mBannerAdView, 0);
+                            mBannerLayout.setBackgroundColor(android.R.color.black);
+                        }
                         mainView.requestFocus();
+                    } else {
+                        logInfo("ad requested on existing banner and settings");
                     }
                 } catch (Exception ex){
                     next.callbackContext.error(makeError(PLUGIN_ERROR_CODES_UNKNOWN_ERROR, ex.toString()));
@@ -274,10 +293,16 @@ public class AdMobPlugin extends CordovaPlugin {
                         mainView.requestFocus();
                         mBannerLayout = null;
                     }
+                    if (mBannerTopActive){
+                        View mainView = getView();
+                        ViewGroup parentView = (ViewGroup) mainView.getParent();
+                        parentView.removeView(mBannerAdView);
+                    }
                     if (mBannerAdView != null){
                         mBannerAdView.destroy();
                         logInfo("removed banner ads");
                     }
+                    mBannerTopActive = false;
                     mBannerAdView = null;
                     next.callbackContext.success(); // Thread-safe.
                 } catch (Exception ex){

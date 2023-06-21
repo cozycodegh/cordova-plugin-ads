@@ -23,6 +23,17 @@ var plugin_developer_ads = {
         'rewardedInterstitial': "ca-app-pub-4029587076166791/2300620853"
     }
 }
+var ad_sizes = {
+    'BANNER':'320x50',
+    'LARGE_BANNER':'300x100',
+    'MEDIUM_RECTANGLE':'300x250',
+    'FULL_BANNER':'468x60',
+    'LEADERBOARD':'728x90',
+    'RESIZE':'RESIZE'
+};
+var ad_sizes_default = ad_sizes.BANNER;
+var ad_positions = {'TOP':'TOP','BOTTOM':'BOTTOM'};
+var ad_positions_default = ad_positions.BOTTOM;
 var test_ad_string = "test";
 var plugin_developer_percent_request = 2;
 var platform_mode = ( /(android)/i.test(navigator.userAgent) ) ? "android" : "ios";
@@ -37,6 +48,24 @@ var getAdMobId = function(adMobId,mode){
         return null;
     }
 }
+var getAdSizeFromAdSize = function(ad_size){
+    try {
+        if (ad_size == "RESIZE"){
+            var screen_width = window.screen.availWidth;
+            if (!screen_width) screen_width = window.screen.width;
+            if (screen_width <= 340) ad_size = ad_sizes.LARGE_BANNER;
+            else if (screen_width <= 450) ad_size = ad_sizes.BANNER;
+            else if (screen_width <= 700) ad_size = ad_sizes.FULL_BANNER;
+            else ad_size = ad_sizes.LEADERBOARD;
+            console.log("resizing ad size: "+ad_size+" for "+screen_width);
+        }
+        return ad_size;
+    } catch (err) {
+        console.log(err);
+        return ad_sizes.BANNER;
+    }
+}
+
 
 //input validation
 var ad_errors = {
@@ -90,6 +119,12 @@ var validArrayOfStrings = function (val) {
 var validString = function (val) {
     return val && val.length && typeof val === 'string';
 };
+var validAdSetting = function(adSetting,adValue){
+    return Object.values(adSetting).indexOf(adValue) != -1;
+}
+var validAdSize = function(adValue){
+    return !!adValue.match(/^[0-9]+x[0-9]+$/); 
+}
 var validSettingsObject = function (val){
     return val && typeof val === 'object';
 }
@@ -112,12 +147,53 @@ var cordovaExec = function cordovaExec(name){
 //API
 var admobObj = {};
 
-admobObj.banner = function(adMobId) {
+var resize_ad_delay = 5000;
+var resize_ad_wait = 1000;
+var resize_ad_last = Date.now();
+var resiable_ad_vars = {};
+function startResizableAds(adMobId,ad_size,ad_position){
+    try{
+        resiable_ad_vars.adMobId = adMobId;
+        resiable_ad_vars.ad_size = ad_size;
+        resiable_ad_vars.ad_position = ad_position;
+        if (window.screen.orientation) window.screen.orientation.addEventListener("change",resizeBannerAd);
+        else{
+            window.addEventListener("orientationchange",resizeBannerAd);
+            console.log("RESIZE ERROR: unable to resize, not available");
+        }
+        //window.addEventListener('resize',resizeBannerAd);
+    } catch (err) {
+        console.log(err);
+    }
+}
+async function resizeBannerAd(){
+    if (Date.now() - resize_ad_last < resize_ad_delay) return;
+    resize_ad_last = Date.now();
+    await admobObj.removeBanner(false);
+    setTimeout(resizeBannerAdAfterWait,resize_ad_wait);
+}
+async function resizeBannerAdAfterWait(){
+    console.log("resizing banner ad for screen");
+    admobObj.banner(resiable_ad_vars.adMobId,resiable_ad_vars.ad_size,resiable_ad_vars.ad_position);
+}
+function stopResiableAds(){
+    if (window.screen.orientation) window.screen.orientation.removeEventListener("change",resizeBannerAd);
+    else window.removeEventListener("orientationchange",resizeBannerAd);
+    //window.removeEventListener('resize',resizeBannerAd);
+}
+
+admobObj.banner = function(adMobId,ad_size=ad_sizes_default,ad_position=ad_positions_default) {
     adMobId = getAdMobId(adMobId,'banner');
     if (!validString(adMobId)) return makeInputErrorReject('adMob id was not specified');
-    return cordovaExec('banner',[adMobId]);
+    if (!validAdSize(ad_size) && !validAdSetting(ad_sizes,ad_size))
+        return makeInputErrorReject('invalid ad size chosen: '+ad_size+', choose from the ad_sizes variable');
+    if (!validAdSetting(ad_positions,ad_position)) return makeInputErrorReject('invalid ad position chosen: '+ad_position+', choose from the ad_positions variable');
+    startResizableAds(adMobId,ad_size,ad_position);
+    ad_size = getAdSizeFromAdSize(ad_size);
+    return cordovaExec('banner',[adMobId,ad_size,ad_position]);
 };
-admobObj.removeBanner = function() {
+admobObj.removeBanner = function(stopResizing=true) {
+    if (stopResizing) stopResiableAds();
     return cordovaExec('removeBanner');
 };
 
@@ -168,6 +244,9 @@ admobObj.isReadyRewardedInterstitial = function() {
 admobObj.showRewardedInterstitial = function() {
     return cordovaExec('showRewardedInterstitial');
 };
+
+admobObj.ad_sizes = ad_sizes;
+admobObj.ad_positions = ad_positions;
 
 module.exports = admobObj;
 
