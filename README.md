@@ -22,7 +22,7 @@ Have a good one!
 Add these calls inside of your cordova JavaScript to show ads: <br>
 
 <ins>banner ads</ins> <br>
-[`adMob.banner(bannerId)`](docs/banner.md) <br>
+[`adMob.banner(bannerId,adMob.ad_sizes.RESIZE,adMob.ad_positions.TOP)`](docs/banner.md) <br>
 [`adMob.removeBanner()`](docs/banner.md#remove-banner) <br>
 
 <ins>full screen ads </ins><br>
