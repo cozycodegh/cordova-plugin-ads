@@ -4,6 +4,7 @@
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
 #import <AdSupport/AdSupport.h>
 #import <AdSupport/ASIdentifierManager.h>
+#import <UserMessagingPlatform/UserMessagingPlatform.h>
 
 #import "AdMobPlugin.h"
 #import <Cordova/CDVPlugin.h>
@@ -50,9 +51,49 @@
 - (void) initializeAds {
     if(! self.adsInitialized) {
         NSLog(@"ADMOBPLUGIN: initializing ads");
+        //CMP ads pop up
+        // Create a UMPRequestParameters object.
+        __weak __typeof__(self) weakSelf = self;
+        UMPRequestParameters *parameters = [[UMPRequestParameters alloc] init];
+        // Set tag for under age of consent. NO means users are not under age
+        // of consent.
+        parameters.tagForUnderAgeOfConsent = NO;
+        
+        // Request an update for the consent information.
+        [UMPConsentInformation.sharedInstance
+         requestConsentInfoUpdateWithParameters:parameters
+         completionHandler:^(NSError *_Nullable requestConsentError) {
+            if (requestConsentError) {
+                // Consent gathering failed.
+                NSLog(@"Error: %@", requestConsentError.localizedDescription);
+                return;
+            }
+            // TODO: Load and present the consent form.
+            __strong __typeof__(self) strongSelf = weakSelf;
+            if (!strongSelf) {
+                return;
+            }
+            /*[UMPConsentForm loadAndPresentIfRequiredFromViewController:strongSelf
+                                                     completionHandler:^(NSError *loadAndPresentError) {
+                if (loadAndPresentError) {
+                    // Consent gathering failed.
+                    NSLog(@"Error: %@", loadAndPresentError.localizedDescription);
+                    return;
+                }
+                // Consent has been gathered.
+            }];
+            // Check if you can initialize the Google Mobile Ads SDK in parallel
+            // while checking for new consent information. Consent obtained in
+            // the previous session can be used to request ads.
+            if (UMPConsentInformation.sharedInstance.canRequestAds) {
+                [self startGoogleMobileAdsSDKOnce];
+            }*/
+        }];
+        
         [self requestAdsTrackingPermission];
         self.adsInitialized = YES;
     }
+    
 }
 
 //banner

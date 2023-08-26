@@ -61,6 +61,10 @@ import com.google.android.gms.ads.admanager.AdManagerAdView;
 import com.google.android.gms.ads.admanager.AdManagerInterstitialAd;
 import com.google.android.gms.ads.admanager.AdManagerInterstitialAdLoadCallback;
 import com.google.ads.mediation.admob.AdMobAdapter;*/
+import com.google.android.ump.ConsentInformation;
+import com.google.android.ump.ConsentRequestParameters;
+import com.google.android.ump.FormError;
+import com.google.android.ump.UserMessagingPlatform;
 
 import ca.cozycode.cordova.ads.NextAsync;
 
@@ -99,6 +103,8 @@ public class AdMobPlugin extends CordovaPlugin {
     protected boolean mAdsInitialized = false;
     
     //ads
+    private ConsentInformation consentInformation;
+    
     AdView mBannerAdView;
     InterstitialAd mInterstitialAd;
     RewardedAd mRewardedAd;
@@ -621,6 +627,24 @@ public class AdMobPlugin extends CordovaPlugin {
     private void adMobInitialize() {
       synchronized (mLock) {
         if (!mAdsInitialized) {
+            // Set tag for under age of consent. false means users are not under age
+            // of consent.
+            ConsentRequestParameters params = new ConsentRequestParameters
+            .Builder()
+            .setTagForUnderAgeOfConsent(false)
+            .build();
+            
+            consentInformation = UserMessagingPlatform.getConsentInformation(mActivity);
+            /*consentInformation.requestConsentInfoUpdate(mActivity, params,
+                                                        (OnConsentInfoUpdateSuccessListener) () -> {
+                                                            // TODO: Load and show the consent form.
+                                                        },
+                                                        (OnConsentInfoUpdateFailureListener) requestConsentError -> {
+                                                            // Consent gathering failed.
+                                                            Log.w(TAG, String.format("%s: %s", requestConsentError.getErrorCode(), requestConsentError.getMessage()));
+                                                        });
+            */
+            
           MobileAds.initialize(mContext, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {

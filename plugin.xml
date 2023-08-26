@@ -297,14 +297,30 @@
   </platform>
   
   <platform name="fire-os">
+      <config-file target="config.xml" parent="/*">
+          <feature name="AdMobPlugin">
+              <param name="ios-package" value="AdMobPlugin" />
+          </feature>
+      </config-file>
   </platform>
   
   <!-- not supported below -->
   <platform name="browser">
+      <config-file target="config.xml" parent="/*">
+          <feature name="AdMobPlugin">
+              <param name="ios-package" value="AdMobPlugin" />
+          </feature>
+      </config-file>
   </platform>
   
   <!-- not supported below -->
-  <platform name="windows">  </platform>
+  <platform name="windows">
+      <config-file target="config.xml" parent="/*">
+          <feature name="AdMobPlugin">
+              <param name="ios-package" value="AdMobPlugin" />
+          </feature>
+      </config-file>  
+  </platform>
 
 </plugin>
 

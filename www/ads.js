@@ -100,7 +100,6 @@ var makeInputError = function (msg){
 var makeAdsErrorReject = function (reject){
     return function(){
         var adserr = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        console.log(JSON.stringify(arguments));
         var err = (adserr == cordova_unimplemented_error) ? getError('not implemented') : getError('ads error');
         if (adserr.message) err.message = adserr.message;
         else if (typeof adserr == "string") err.message = adserr;
