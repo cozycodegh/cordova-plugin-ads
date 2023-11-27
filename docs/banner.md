@@ -44,7 +44,7 @@ var admob_ids = {
 };
 ```
 - `ad_size` (optional - select a banner size, default is BANNER)` <br>
-    - `adMob.ad_sizes.RESIZE` resizes to the get the largest fitting avialable banner
+    - `adMob.ad_sizes.RESIZE` resizes to the get the largest fitting available banner
     - `adMob.ad_sizes.BANNER` default 320x50 ad banner
     - `adMob.ad_sizes.LARGE_BANNER` 300x100
     - `adMob.ad_sizes.MEDIUM_RECTANGLE` 300x250
