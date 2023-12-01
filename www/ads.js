@@ -53,8 +53,8 @@ var getAdSizeFromAdSize = function(ad_size){
         if (ad_size == "RESIZE"){
             var screen_width = window.screen.availWidth;
             if (!screen_width) screen_width = window.screen.width;
-            if (screen_width <= 340) ad_size = ad_sizes.LARGE_BANNER;
-            else if (screen_width <= 450) ad_size = ad_sizes.BANNER;
+            //overlapping//if (screen_width <= 340) ad_size = ad_sizes.LARGE_BANNER;
+            if (screen_width <= 450) ad_size = ad_sizes.BANNER;
             else if (screen_width <= 700) ad_size = ad_sizes.FULL_BANNER;
             else ad_size = ad_sizes.LEADERBOARD;
             console.log("resizing ad size: "+ad_size+" for "+screen_width);

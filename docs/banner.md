@@ -46,8 +46,8 @@ var admob_ids = {
 - `ad_size` (optional - select a banner size, default is BANNER)` <br>
     - `adMob.ad_sizes.RESIZE` resizes to the get the largest fitting avialable banner
     - `adMob.ad_sizes.BANNER` default 320x50 ad banner
-    - `adMob.ad_sizes.LARGE_BANNER` 300x100
-    - `adMob.ad_sizes.MEDIUM_RECTANGLE` 300x250
+    - `adMob.ad_sizes.LARGE_BANNER` 300x100 (overlaps with UI on Android)
+    - `adMob.ad_sizes.MEDIUM_RECTANGLE` 300x250 (overlaps with UI on Android)
     - `adMob.ad_sizes.FULL_BANNER` 468x60
     - `adMob.ad_sizes.LEADERBOARD` 728x90
 - `ad_position` (optional - select a banner position, default is BOTTOM)` <br>

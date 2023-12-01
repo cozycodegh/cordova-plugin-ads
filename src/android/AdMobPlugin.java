@@ -63,6 +63,7 @@ import com.google.android.gms.ads.admanager.AdManagerInterstitialAdLoadCallback;
 import com.google.ads.mediation.admob.AdMobAdapter;*/
 import com.google.android.ump.ConsentInformation;
 import com.google.android.ump.ConsentRequestParameters;
+import com.google.android.ump.ConsentForm;
 import com.google.android.ump.FormError;
 import com.google.android.ump.UserMessagingPlatform;
 
@@ -635,15 +636,26 @@ public class AdMobPlugin extends CordovaPlugin {
             .build();
             
             consentInformation = UserMessagingPlatform.getConsentInformation(mActivity);
-            /*consentInformation.requestConsentInfoUpdate(mActivity, params,
-                                                        (OnConsentInfoUpdateSuccessListener) () -> {
-                                                            // TODO: Load and show the consent form.
-                                                        },
-                                                        (OnConsentInfoUpdateFailureListener) requestConsentError -> {
-                                                            // Consent gathering failed.
-                                                            Log.w(TAG, String.format("%s: %s", requestConsentError.getErrorCode(), requestConsentError.getMessage()));
-                                                        });
-            */
+            consentInformation.requestConsentInfoUpdate(mActivity, params,
+                (ConsentInformation.OnConsentInfoUpdateSuccessListener) () -> {
+                    //Load and show the consent form.
+                com.google.android.ump.UserMessagingPlatform.loadAndShowConsentFormIfRequired(
+                        this,
+                        (ConsentForm.OnConsentFormDismissedListener) loadAndShowError -> {
+                            if (loadAndShowError != null) {
+                            // Consent gathering failed.
+                            Log.w(TAG, String.format("%s: %s",
+                                loadAndShowError.getErrorCode(),
+                                loadAndShowError.getMessage()));
+                            }// Consent has been gathered.
+                            logInfo("CONSENT HAS BEEN GATHERED");
+                    });
+                },
+                (ConsentInformation.OnConsentInfoUpdateFailureListener) requestConsentError -> {
+                    // Consent gathering failed.
+                    Log.w(TAG, String.format("%s: %s", requestConsentError.getErrorCode(), requestConsentError.getMessage()));
+            });
+            //*/
             
           MobileAds.initialize(mContext, new OnInitializationCompleteListener() {
             @Override

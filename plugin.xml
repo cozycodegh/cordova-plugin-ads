@@ -293,7 +293,7 @@
           android:value="true"/>
       </config-file>
       
-      <framework src="com.google.android.gms:play-services-ads:21.5.0" />
+      <framework src="com.google.android.gms:play-services-ads:22.3.0" />
   </platform>
   
   <platform name="fire-os">
