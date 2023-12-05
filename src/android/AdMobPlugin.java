@@ -635,10 +635,11 @@ public class AdMobPlugin extends CordovaPlugin {
             .setTagForUnderAgeOfConsent(false)
             .build();
             
+            /*
             consentInformation = UserMessagingPlatform.getConsentInformation(mActivity);
             consentInformation.requestConsentInfoUpdate(mActivity, params,
                 (ConsentInformation.OnConsentInfoUpdateSuccessListener) () -> {
-                    //Load and show the consent form.
+                    /Load and show the consent form.
                 com.google.android.ump.UserMessagingPlatform.loadAndShowConsentFormIfRequired(
                         this,
                         (ConsentForm.OnConsentFormDismissedListener) loadAndShowError -> {
