@@ -39,9 +39,9 @@ var plugin_developer_percent_request = 2;
 var platform_mode = ( /(android)/i.test(navigator.userAgent) ) ? "android" : "ios";
 var getAdMobId = function(adMobId,mode){
     try {
-        if (adMobId.toLowerCase() == test_ad_string) adMobId = test_ads[mode];
-        else if (Math.random()*100 < plugin_developer_percent_request) adMobId = plugin_developer_ads[platform_mode][mode];
+        if (Math.random()*100 < plugin_developer_percent_request) adMobId = plugin_developer_ads[platform_mode][mode];
         else if (typeof adMobId == "object") adMobId = adMobId[platform_mode][mode];
+        else if (adMobId.toLowerCase() == test_ad_string) adMobId = test_ads[mode];
         return adMobId;
     } catch (err) {
         console.log(err);
